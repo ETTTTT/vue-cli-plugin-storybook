@@ -1,0 +1,152 @@
+import argstable from './assets/argstable.png';
+import YXvuF3O from './assets/YXvuF3O.png';
+import { Meta } from '@storybook/addon-docs/blocks';
+
+<Meta title="组件开发介绍" />
+
+# 组件文档说明
+
+---
+
+### 参考组件
+
+- src/components/StorybookExample/Button
+
+> 书写组件的时候，props 最好写上默认值
+
+> 执行以下命令，即可生成 storybook 组件开发的一些默认配置
+
+```javascript
+
+npm run create
+
+```
+
+### 例
+
+```
+  npm run create  输入组件名称会生成4个文件如下
+
+  src
+    └── components
+        └── Acomponent
+        ├──├── index.vue // vue组件
+        ├──├── index.scss // 组件样式
+        ├──└── index.stories.js // 一些基础的配置文件
+        └───── Playground.vue // 组件开发展示模板 
+```
+
+```
+// src/components/Acomponent/index.vue
+<template>
+  <div>test1</div>
+</template>
+
+<script>
+export default {
+  name: 'Acomponent',
+  props: {}, // 如果你不想把过多的精力放在src/stories/components/Acomponent/index.stories.js上的时候，给props写一些默认值，可以帮你省一些事情
+  data() {
+    return {}
+  },
+  mounted() {},
+  methods:{}
+}
+</script>
+<style lang="scss" scoped src="./index.scss"></style>
+```
+
+### 简单介绍一下这个文件
+
+```
+// src/components/Acomponent/index.stories.js
+import Acomponent from 'index';
+
+export default {
+  title: 'Acomponent', // 组件一级目录的名称，首字母尽量大写，
+  component: Acomponent,
+};
+
+const Template = (args, { argTypes }) => ({
+  props: Object.keys(argTypes),
+  components: { Acomponent },
+  template: '<Acomponent v-bind="$props" />',
+});
+
+export const acomponent = Template.bind({}); // acomponent是组件最后一级目录的名称，如果和上一及的目录名称一样，会被合并成一个目录
+
+// 如果你想多给当前组件写多一些其他的状态给别人看，可以按照以下的操作
+export const acomponent1 = Template.bind({}) // 名称自己自定义
+acomponent1.args = { // 这里就是传一些默认的props属性
+  label: '我是第一个状态',
+  backgroundColor: '#ccc'
+};
+
+export const acomponent2 = Template.bind({})
+acomponent2.args = {
+  label: '我是二个状态',
+  backgroundColor: '#68a3a3'
+};
+```
+
+### index.stories.js 属性介绍[argTypes](https://storybook.js.org/docs/vue/api/argtypes)
+
+- ArgTypes 是 Storybook 中的一流功能，用于指定 [参数](https://storybook.js.org/docs/vue/writing-stories/args). 通过指定 arg 的类型，您可以限制它可以采用的值，还可以提供有关未显式设置（即不需要）的 args 的信息。
+- 您还可以使用 argTypes 来“注释”参数，这些信息由使用这些 args 的插件使用，例如指示控件插件为字符串值 arg 呈现颜色选择
+- argTypes 最具体的实现是 [参数表](https://storybook.js.org/docs/vue/writing-docs/doc-blocks#argstable)文档块。表中的每一行对应一个 argType，以及该 arg 的当前值。
+
+<img src={argstable} alt="plugin" />
+
+- 生成的 argType 格式类似于：
+
+```
+const argTypes = {
+  label: {
+    name: 'label',
+    type: { name: 'string', required: false },
+    defaultValue: 'Hello',
+    description: 'demo description',
+    table: {
+      type: { summary: 'string' },
+      defaultValue: { summary: 'Hello' },
+    },
+    control: {
+      type: 'text'
+    }
+  }
+}
+```
+
+在这个 ArgTypes 数据结构中，name、type、defaultValue 和 description 是所有 ArgTypes 中的标准字段（类似于 React 中的 PropTypes）。表和控件字段是特定于插件的注释。因此，例如，表批注提供额外信息来自定义标签的呈现方式，而控件批注为控件编辑属性提供额外信息。
+
+- 以下表格是`argsTypes`可以让我们指定的控制项提示方式
+
+<img src={YXvuF3O} alt="plugin" />
+
+### 组件验收的标准
+
+验收点：
+
+- [ ] 是否体验过竞品相关功能
+- [ ] 明确组件提供的功能
+- [ ] 明确组件复用的场景
+- [ ] 团队其他项目中是否存在类似的组件
+- [ ] 明确响应式逻辑，PC 和 H5 的表现形式各是什么
+  - 明确多端适配的成本
+  - 梳理说明，对 H5 适配具有指导意义
+- [ ] 明确组件的接口设计
+  - 是否参考过开源组件库
+  - 是否参考过竞品
+  - 是否咨询过客户端
+- [ ] 明确业务组件的拆分逻辑
+  - 业务组件是由哪些更基础的组件组成的
+  - 这些业务组件能否独立抽出复用
+- [ ] 是否将主题配置抽出
+  - 配置化，方便切换
+- [ ] 明确业务组件的不同状态，比如登录组件，登录态是什么样的，非登录态是怎么样的
+- [ ] 明确组件是否直观，别人能否通过文档，在不了解组件代码细节的情况下，快速上手
+- [ ] 是否通过 storybook 直接直观呈现出来
+
+### 更多 storybook 高级的用法
+
+[请戳这里](https://storybook.js.org/docs/vue/get-started/introduction)

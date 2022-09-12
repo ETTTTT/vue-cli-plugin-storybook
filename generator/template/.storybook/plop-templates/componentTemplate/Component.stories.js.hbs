@@ -1,0 +1,20 @@
+import {{name}} from './index.vue';
+
+export default {
+  title: '组件开发者/{{name}}',
+  component: {{{name}}},
+  parameters: {
+    viewport: {
+      defaultViewport: 'iphone',
+    },
+  },
+  argTypes: {},
+};
+
+const Template = (args, { argTypes }) => ({
+  props: Object.keys(argTypes),
+  components: { {{name}} },
+  template: '<{{name}} v-bind="$props" />',
+});
+
+export const {{storiesTitle}} = Template.bind({});
